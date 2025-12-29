@@ -1,103 +1,154 @@
 'use client'
 
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import confetti from 'canvas-confetti'
-import { Heart, Sparkles } from 'lucide-react'
-import RunawayButton from '@/components/RunawayButton'
-import Shrine from '@/components/Shrine'
-import { recordYesClick } from '@/lib/actions'
+import { motion } from 'framer-motion'
+import Link from 'next/link'
+import { Heart, Sparkles, Image, BookOpen, ArrowRight } from 'lucide-react'
+import Navigation from '@/components/Navigation'
 
-type Phase = 'proposal' | 'shrine'
+const pages = [
+  {
+    href: '/valentine',
+    title: 'Valentine Proposal',
+    description: 'Will you be my Valentine?',
+    icon: Heart,
+    gradient: 'from-pink-500 via-rose-500 to-red-500',
+    emoji: '💖',
+  },
+  {
+    href: '/shrine',
+    title: 'The Shrine',
+    description: 'A sacred place dedicated to you',
+    icon: Sparkles,
+    gradient: 'from-amber-500 via-yellow-500 to-orange-500',
+    emoji: '🪔',
+  },
+  {
+    href: '/gallery',
+    title: 'Gallery',
+    description: 'Beautiful memories together',
+    icon: Image,
+    gradient: 'from-purple-500 via-pink-500 to-rose-500',
+    emoji: '📸',
+  },
+  {
+    href: '/poetry',
+    title: 'Poetry',
+    description: 'Words from the heart',
+    icon: BookOpen,
+    gradient: 'from-blue-500 via-indigo-500 to-purple-500',
+    emoji: '📝',
+  },
+]
 
 export default function Home() {
-  const [phase, setPhase] = useState<Phase>('proposal')
-  const [isTransitioning, setIsTransitioning] = useState(false)
-
-  const handleYesClick = async () => {
-    setIsTransitioning(true)
-
-    // Record the yes click
-    await recordYesClick()
-
-    // Confetti explosion
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
-      colors: ['#ff6b9d', '#ff8fab', '#ffb3d9', '#ffc1cc', '#ff9ec7', '#dc143c', '#c41e3a'],
-    })
-
-    // Create falling lilies and roses
-    const favoriteFlowers = ['🌺', '🌹']
-    for (let i = 0; i < 30; i++) {
-      setTimeout(() => {
-        const flower = document.createElement('div')
-        flower.textContent = favoriteFlowers[Math.floor(Math.random() * favoriteFlowers.length)]
-        flower.style.position = 'fixed'
-        flower.style.fontSize = '35px'
-        flower.style.left = Math.random() * 100 + '%'
-        flower.style.top = '-50px'
-        flower.style.pointerEvents = 'none'
-        flower.style.zIndex = '1000'
-        flower.style.animation = `fall ${3 + Math.random() * 2}s linear forwards`
-        document.body.appendChild(flower)
-        setTimeout(() => flower.remove(), 5000)
-      }, i * 50)
-    }
-
-    // Transition to shrine after delay
-    setTimeout(() => {
-      setPhase('shrine')
-      setIsTransitioning(false)
-    }, 1500)
-  }
-
   return (
     <div className="min-h-screen overflow-hidden relative">
-      {/* Background with phase-based gradients */}
-      <AnimatePresence mode="wait">
-        {phase === 'proposal' ? (
-          <motion.div
-            key="proposal-bg"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 1 }}
-            className="fixed inset-0 bg-gradient-to-br from-pink-500 via-pink-400 via-rose-400 to-red-500"
-            style={{
-              background: 'linear-gradient(-45deg, #c41e3a, #ff6b9d, #ffc1cc, #ffb3d9, #ff9ec7, #dc143c, #8b0000)',
-              backgroundSize: '400% 400%',
-              animation: 'gradientShift 20s ease infinite',
-            }}
-          />
-        ) : (
-          <motion.div
-            key="shrine-bg"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
-            className="fixed inset-0"
-            style={{
-              background: 'linear-gradient(-45deg, #8b4513, #d97706, #f59e0b, #ffd700, #fbbf24, #f59e0b, #dc2626, #b91c1c)',
-              backgroundSize: '400% 400%',
-              animation: 'gradientShift 20s ease infinite',
-            }}
-          />
-        )}
-      </AnimatePresence>
+      <Navigation />
+      
+      {/* Animated Background */}
+      <div
+        className="fixed inset-0"
+        style={{
+          background: 'linear-gradient(-45deg, #ff6b9d, #ff8fab, #ffb3d9, #ffc1cc, #ff9ec7, #dc143c)',
+          backgroundSize: '400% 400%',
+          animation: 'gradientShift 20s ease infinite',
+        }}
+      />
 
-      {/* Floating Hearts/Flowers (Phase 1 only) */}
-      {phase === 'proposal' && <FloatingElements />}
+      {/* Floating Hearts */}
+      <FloatingElements />
 
       {/* Main Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
-        <AnimatePresence mode="wait">
-          {phase === 'proposal' ? (
-            <ProposalPhase key="proposal" onYesClick={handleYesClick} isTransitioning={isTransitioning} />
-          ) : (
-            <Shrine key="shrine" imageUrl="/DPZY-165.jpg" />
-          )}
-        </AnimatePresence>
+      <div className="relative z-10 min-h-screen flex items-center justify-center p-4 pt-24">
+        <div className="w-full max-w-6xl mx-auto">
+          {/* Hero Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16"
+          >
+            <motion.h1
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.6 }}
+              className="text-5xl md:text-7xl font-bold text-white mb-4 drop-shadow-2xl"
+              style={{
+                textShadow: '2px 2px 8px rgba(0, 0, 0, 0.3), 0 0 30px rgba(255, 215, 0, 0.6)',
+              }}
+            >
+              Welcome to Our Love Story 💕
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="text-xl md:text-2xl text-white/90 mb-2"
+              style={{ fontFamily: 'Noto Sans Malayalam, sans-serif' }}
+            >
+              നമ്മുടെ സ്നേഹകഥയിലേക്ക് സ്വാഗതം 💕
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="text-lg text-white/80 italic"
+            >
+              Explore the pages of our journey together
+            </motion.p>
+          </motion.div>
+
+          {/* Page Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {pages.map((page, index) => {
+              const Icon = page.icon
+              return (
+                <motion.div
+                  key={page.href}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 + index * 0.1, duration: 0.6 }}
+                >
+                  <Link href={page.href}>
+                    <motion.div
+                      className="group relative backdrop-blur-xl bg-white/20 rounded-3xl border-2 border-white/40 p-8 h-full cursor-pointer overflow-hidden"
+                      style={{
+                        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37), 0 0 60px rgba(255, 107, 157, 0.3)',
+                      }}
+                      whileHover={{ scale: 1.05, y: -5 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      {/* Gradient Overlay on Hover */}
+                      <div
+                        className={`absolute inset-0 bg-gradient-to-br ${page.gradient} opacity-0 group-hover:opacity-20 transition-opacity duration-300`}
+                      />
+
+                      {/* Content */}
+                      <div className="relative z-10">
+                        <div className="flex items-center gap-4 mb-4">
+                          <div className={`p-4 rounded-2xl bg-gradient-to-br ${page.gradient} shadow-lg`}>
+                            <Icon className="w-8 h-8 text-white" />
+                          </div>
+                          <div className="text-4xl">{page.emoji}</div>
+                        </div>
+
+                        <h2 className="text-2xl md:text-3xl font-bold text-white mb-2 drop-shadow-lg">
+                          {page.title}
+                        </h2>
+                        <p className="text-white/80 text-lg mb-4">{page.description}</p>
+
+                        <div className="flex items-center text-white/90 font-medium group-hover:text-white transition-colors">
+                          <span>Explore</span>
+                          <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-2 transition-transform" />
+                        </div>
+                      </div>
+                    </motion.div>
+                  </Link>
+                </motion.div>
+              )
+            })}
+          </div>
+        </div>
       </div>
 
       <style jsx global>{`
@@ -112,187 +163,8 @@ export default function Home() {
             background-position: 0% 50%;
           }
         }
-
-        @keyframes fall {
-          to {
-            transform: translateY(100vh) rotate(360deg);
-            opacity: 0;
-          }
-        }
-
-        @keyframes floatHeart {
-          0% {
-            transform: translateY(100vh) translateX(0) rotate(0deg);
-            opacity: 0;
-          }
-          10% {
-            opacity: 0.7;
-          }
-          90% {
-            opacity: 0.7;
-          }
-          100% {
-            transform: translateY(-100px) translateX(100px) rotate(360deg);
-            opacity: 0;
-          }
-        }
       `}</style>
     </div>
-  )
-}
-
-// Proposal Phase Component
-function ProposalPhase({
-  onYesClick,
-  isTransitioning,
-}: {
-  onYesClick: () => void
-  isTransitioning: boolean
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8, y: 50 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.8, y: -50 }}
-      transition={{ duration: 1, ease: 'easeOut' }}
-      className="w-full max-w-2xl mx-auto"
-    >
-      <motion.div
-        className="backdrop-blur-xl bg-white/20 rounded-3xl border-2 border-white/40 p-8 md:p-12 text-center shadow-2xl"
-        style={{
-          boxShadow: `
-            0 8px 32px 0 rgba(31, 38, 135, 0.37),
-            0 0 60px rgba(255, 107, 157, 0.3),
-            inset 0 1px 0 rgba(255, 255, 255, 0.5)
-          `,
-        }}
-        animate={{
-          y: [0, -15, 0],
-          rotate: [0, 1, 0],
-        }}
-        transition={{
-          duration: 4,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
-      >
-        {/* Decorative Flowers */}
-        <motion.div
-          className="absolute -top-6 right-8 text-5xl"
-          animate={{ y: [0, -10, 0], rotate: [0, 10, 0] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-        >
-          🌹
-        </motion.div>
-        <motion.div
-          className="absolute -bottom-6 left-8 text-5xl"
-          animate={{ y: [0, -10, 0], rotate: [0, -10, 0] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-        >
-          🌺
-        </motion.div>
-
-        {/* GIF/Image Container */}
-        <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="mb-6 relative inline-block"
-        >
-          <div
-            className="absolute -inset-4 bg-gradient-to-r from-pink-500 to-rose-400 rounded-2xl blur-xl opacity-50"
-            style={{
-              background: 'linear-gradient(45deg, #ff6b9d, #ff8fab, #ffb3d9, #ff6b9d)',
-              backgroundSize: '400% 400%',
-              animation: 'gradientShift 3s ease infinite',
-            }}
-          />
-          <img
-            src="https://media.giphy.com/media/26u4cqiYI30juCOGY/giphy.gif"
-            alt="Cute animation"
-            className="relative w-48 h-48 md:w-56 md:h-56 object-contain rounded-2xl shadow-xl"
-          />
-        </motion.div>
-
-        {/* Main Text */}
-        <motion.h1
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 drop-shadow-[2px_2px_8px_rgba(0,0,0,0.3)]"
-          style={{
-            textShadow: `
-              2px 2px 8px rgba(0, 0, 0, 0.3),
-              0 0 20px rgba(255, 215, 0, 0.6),
-              0 0 30px rgba(196, 30, 58, 0.5)
-            `,
-          }}
-        >
-          Will you be my Valentine? 💖
-        </motion.h1>
-
-        <motion.p
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.7 }}
-          className="text-2xl md:text-3xl font-semibold text-yellow-300 mb-6"
-          style={{ fontFamily: 'Noto Sans Malayalam, sans-serif' }}
-        >
-          നീ എന്റെ വാലന്റൈൻ ആകുമോ? 💖
-        </motion.p>
-
-        <motion.p
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.9 }}
-          className="text-lg md:text-xl text-white/90 mb-8 italic"
-        >
-          You make every day feel like a celebration
-        </motion.p>
-
-        <motion.p
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 1.1 }}
-          className="text-base md:text-lg text-white/80 mb-10"
-          style={{ fontFamily: 'Noto Sans Malayalam, sans-serif' }}
-        >
-          നിങ്ങൾ എല്ലാ ദിവസവും ആഘോഷം പോലെ തോന്നിക്കുന്നു
-        </motion.p>
-
-        {/* Buttons */}
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 1.3 }}
-          className="flex flex-col sm:flex-row gap-6 justify-center items-center"
-        >
-          <motion.button
-            onClick={onYesClick}
-            disabled={isTransitioning}
-            className="px-12 py-4 rounded-full font-bold text-xl uppercase tracking-wide
-                       bg-gradient-to-r from-red-600 via-pink-500 to-red-600
-                       text-yellow-100 border-2 border-yellow-300
-                       shadow-[0_6px_20px_rgba(255,107,157,0.4),0_0_0_0_rgba(255,107,157,0.7)]
-                       hover:scale-110 hover:shadow-[0_10px_40px_rgba(255,107,157,0.8),0_0_0_15px_rgba(255,107,157,0.3)]
-                       active:scale-105 transition-all duration-300
-                       disabled:opacity-50 disabled:cursor-not-allowed
-                       relative overflow-hidden"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 1.05 }}
-          >
-            <span className="relative z-10 flex items-center gap-2">
-              <Heart className="w-5 h-5" />
-              Yes! 💖
-            </span>
-          </motion.button>
-
-          <RunawayButton className="px-10 py-4">
-            No 😢
-          </RunawayButton>
-        </motion.div>
-      </motion.div>
-    </motion.div>
   )
 }
 
@@ -300,8 +172,8 @@ function ProposalPhase({
 function FloatingElements() {
   return (
     <div className="fixed inset-0 pointer-events-none z-0">
-      {Array.from({ length: 15 }).map((_, i) => {
-        const items = ['💖', '💕', '💗', '💓', '💝', '❤️', '💞', '🌺', '🌹', '🌺', '🌹']
+      {Array.from({ length: 20 }).map((_, i) => {
+        const items = ['💖', '💕', '💗', '💓', '💝', '❤️', '💞', '🌺', '🌹']
         const item = items[Math.floor(Math.random() * items.length)]
         const isFlower = item === '🌺' || item === '🌹'
         return (
