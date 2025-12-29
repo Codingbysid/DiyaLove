@@ -13,22 +13,7 @@ interface Poem {
   language: 'en' | 'ml'
 }
 
-const initialPoems: Poem[] = [
-  {
-    id: 1,
-    title: 'My Heart',
-    content: `In your eyes, I see the stars\nIn your smile, I find my home\nEvery moment with you\nIs a treasure I'll never let go`,
-    date: '2024-02-14',
-    language: 'en',
-  },
-  {
-    id: 2,
-    title: 'എന്റെ ഹൃദയം',
-    content: `നിന്റെ കണ്ണുകളിൽ ഞാൻ നക്ഷത്രങ്ങൾ കാണുന്നു\nനിന്റെ പുഞ്ചിരിയിൽ ഞാൻ എന്റെ വീട് കണ്ടെത്തുന്നു`,
-    date: '2024-02-14',
-    language: 'ml',
-  },
-]
+const initialPoems: Poem[] = []
 
 export default function PoetryPage() {
   const [poems, setPoems] = useState<Poem[]>(initialPoems)
@@ -140,8 +125,19 @@ export default function PoetryPage() {
         )}
 
         {/* Poems Feed */}
-        <div className="grid grid-cols-1 gap-8">
-          {poems.map((poem, index) => (
+        {poems.length === 0 ? (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center py-20"
+          >
+            <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+            <p className="text-gray-400 text-lg mb-2">No poems yet</p>
+            <p className="text-gray-400 text-sm">Click "Write New" to add your first love letter</p>
+          </motion.div>
+        ) : (
+          <div className="grid grid-cols-1 gap-8">
+            {poems.map((poem, index) => (
             <motion.div
               key={poem.id}
               initial={{ opacity: 0, y: 20 }}
@@ -166,7 +162,8 @@ export default function PoetryPage() {
               </div>
             </motion.div>
           ))}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   )
