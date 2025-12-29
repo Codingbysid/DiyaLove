@@ -4,11 +4,10 @@
 
 Your Next.js application has been successfully deployed to GitHub:
 
-**Repository**: https://github.com/Codingbysid/cutelove
+**Repository**: https://github.com/Codingbysid/DiyaLove
 
 **Branches**:
-- `main` - Next.js 14 version (current)
-- `nextjs-version` - Same version (backup branch)
+- `main` - Next.js 16 version (current)
 
 ## Image Status ✅
 
@@ -28,7 +27,7 @@ All import paths are correct:
 ## Next Steps for Vercel Deployment
 
 1. Go to [Vercel](https://vercel.com)
-2. Import your GitHub repository: `Codingbysid/cutelove`
+2. Import your GitHub repository: `Codingbysid/DiyaLove`
 3. Vercel will auto-detect Next.js
 4. Click "Deploy"
 5. Your site will be live! 🎉
