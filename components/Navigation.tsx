@@ -7,13 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Heart, Home, Image, BookOpen, Sparkles, Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-type NavItem = {
-  href: string
-  label: string
-  icon: typeof Home
-}
-
-const navItems: NavItem[] = [
+const navItems = [
   { href: '/', label: 'Home', icon: Home },
   { href: '/valentine', label: 'Proposal', icon: Heart },
   { href: '/shrine', label: 'Shrine', icon: Sparkles },

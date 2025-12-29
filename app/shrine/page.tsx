@@ -9,43 +9,19 @@ import { recordYesClick, incrementFlowerCount } from '@/lib/actions'
 
 export default function ShrinePage() {
   const [flowerCount, setFlowerCount] = useState(0)
-  const [isOffering, setIsOffering] = useState(false)
 
-  useEffect(() => {
-    recordYesClick()
-  }, [])
+  useEffect(() => { recordYesClick() }, [])
 
   const handleOfferFlowers = async () => {
-    setIsOffering(true)
     const result = await incrementFlowerCount()
     setFlowerCount(result.count || flowerCount + 1)
 
-    // Gentle Flower Rain
-    const duration = 2000
-    const end = Date.now() + duration
-
     ;(function frame() {
-      confetti({
-        particleCount: 3,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0 },
-        colors: ['#fbbf24', '#f59e0b', '#d97706'],
-        shapes: ['circle']
-      })
-      confetti({
-        particleCount: 3,
-        angle: 120,
-        spread: 55,
-        origin: { x: 1 },
-        colors: ['#fbbf24', '#f59e0b', '#d97706'],
-        shapes: ['circle']
-      })
-
+      const end = Date.now() + 2000
       if (Date.now() < end) {
+        confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#fbbf24', '#f59e0b'], shapes: ['circle'] })
+        confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#fbbf24', '#f59e0b'], shapes: ['circle'] })
         requestAnimationFrame(frame)
-      } else {
-        setIsOffering(false)
       }
     })()
   }
@@ -61,21 +37,12 @@ export default function ShrinePage() {
       </div>
 
       <div className="relative z-10 min-h-screen flex items-center justify-center p-6 pt-24">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="w-full max-w-3xl text-center"
-        >
-          {/* Title */}
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="w-full max-w-3xl text-center">
+          
           <div className="mb-12 space-y-3">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex justify-center gap-2 mb-4"
-            >
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex justify-center gap-2 mb-4">
               <Sparkles className="text-amber-400 w-6 h-6" />
             </motion.div>
-            
             <h1 className="text-5xl md:text-7xl font-bold text-gray-800 tracking-tight" style={{ fontFamily: 'Playfair Display, serif' }}>
               My Goddess
             </h1>
@@ -84,56 +51,24 @@ export default function ShrinePage() {
             </h2>
           </div>
 
-          {/* Elegant Photo Frame */}
           <div className="relative inline-block group">
             <div className="absolute -inset-1 bg-gradient-to-tr from-amber-300 to-yellow-200 rounded-[2.5rem] blur opacity-40 group-hover:opacity-60 transition duration-1000"></div>
             <div className="relative p-2 bg-white rounded-[2.5rem] shadow-xl">
                <div className="relative rounded-[2rem] overflow-hidden border-4 border-amber-50">
-                 <img
-                   src="/DPZY-165.jpg"
-                   alt="Goddess"
-                   className="w-[300px] h-[400px] md:w-[350px] md:h-[450px] object-cover transition-transform duration-700 group-hover:scale-105"
-                 />
-                 
-                 {/* Shine Effect */}
+                 <img src="/DPZY-165.jpg" alt="Goddess" className="w-[300px] h-[400px] md:w-[350px] md:h-[450px] object-cover transition-transform duration-700 group-hover:scale-105" />
                  <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                </div>
             </div>
-
-            {/* Subtle Diyas */}
-            <motion.div 
-              animate={{ opacity: [0.6, 1, 0.6], scale: [0.95, 1.05, 0.95] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="absolute -bottom-4 -left-8 text-4xl filter drop-shadow-lg"
-            >
-              🪔
-            </motion.div>
-            <motion.div 
-              animate={{ opacity: [0.6, 1, 0.6], scale: [0.95, 1.05, 0.95] }}
-              transition={{ duration: 2, repeat: Infinity, delay: 1 }}
-              className="absolute -bottom-4 -right-8 text-4xl filter drop-shadow-lg"
-            >
-              🪔
-            </motion.div>
           </div>
 
-          {/* Action Area */}
           <div className="mt-16">
-            <motion.button
-              onClick={handleOfferFlowers}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="group relative px-8 py-4 bg-white border border-amber-200 rounded-full shadow-[0_4px_20px_-5px_rgba(251,191,36,0.3)] hover:shadow-[0_8px_30px_-5px_rgba(251,191,36,0.4)] transition-all"
-            >
+            <motion.button onClick={handleOfferFlowers} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="group relative px-8 py-4 bg-white border border-amber-200 rounded-full shadow-sm hover:shadow-md transition-all">
               <div className="flex items-center gap-3 text-amber-700 font-semibold text-lg">
                 <Flower2 className="w-5 h-5 group-hover:rotate-45 transition-transform" />
                 <span>Offer Flowers</span>
               </div>
             </motion.button>
-            
-            <p className="mt-4 text-amber-800/60 text-sm font-medium">
-              {flowerCount > 0 ? `${flowerCount} flowers offered with love` : 'Click to offer your love'}
-            </p>
+            <p className="mt-4 text-amber-800/60 text-sm font-medium">{flowerCount > 0 ? `${flowerCount} flowers offered` : 'Click to offer your love'}</p>
           </div>
 
         </motion.div>
