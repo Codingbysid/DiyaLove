@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import confetti from 'canvas-confetti'
-import { Flower2 } from 'lucide-react'
+import { Flower2, Sparkles } from 'lucide-react'
 import Navigation from '@/components/Navigation'
 import { recordYesClick, incrementFlowerCount } from '@/lib/actions'
 
@@ -12,288 +12,132 @@ export default function ShrinePage() {
   const [isOffering, setIsOffering] = useState(false)
 
   useEffect(() => {
-    // Record the visit when shrine page loads
     recordYesClick()
   }, [])
 
   const handleOfferFlowers = async () => {
     setIsOffering(true)
-
-    // Record flower offering
     const result = await incrementFlowerCount()
     setFlowerCount(result.count || flowerCount + 1)
 
-    // Create flower/heart emoji confetti
-    const flowers = ['🌺', '🌹', '🌸', '🌼', '💐']
-    const duration = 3000
-    const animationEnd = Date.now() + duration
+    // Gentle Flower Rain
+    const duration = 2000
+    const end = Date.now() + duration
 
-    const interval = setInterval(() => {
-      const timeLeft = animationEnd - Date.now()
-
-      if (timeLeft <= 0) {
-        clearInterval(interval)
-        setIsOffering(false)
-        return
-      }
-
-      const particleCount = 30
-
-      // Left side burst
+    ;(function frame() {
       confetti({
-        particleCount,
+        particleCount: 3,
         angle: 60,
         spread: 55,
         origin: { x: 0 },
-        colors: ['#f59e0b', '#fbbf24', '#fcd34d', '#d97706', '#dc143c', '#c41e3a'],
-        shapes: ['square'],
+        colors: ['#fbbf24', '#f59e0b', '#d97706'],
+        shapes: ['circle']
       })
-
-      // Right side burst
       confetti({
-        particleCount,
+        particleCount: 3,
         angle: 120,
         spread: 55,
         origin: { x: 1 },
-        colors: ['#f59e0b', '#fbbf24', '#fcd34d', '#d97706', '#dc143c', '#c41e3a'],
-        shapes: ['square'],
+        colors: ['#fbbf24', '#f59e0b', '#d97706'],
+        shapes: ['circle']
       })
 
-      // Center burst
-      confetti({
-        particleCount: 20,
-        spread: 80,
-        origin: { x: 0.5, y: 0.3 },
-        colors: ['#f59e0b', '#fbbf24', '#fcd34d', '#d97706', '#dc143c', '#c41e3a'],
-        shapes: ['square'],
-      })
-    }, 100)
-
-    // Create falling flower emojis
-    for (let i = 0; i < 50; i++) {
-      setTimeout(() => {
-        const flower = document.createElement('div')
-        flower.textContent = flowers[Math.floor(Math.random() * flowers.length)]
-        flower.style.position = 'fixed'
-        flower.style.fontSize = '30px'
-        flower.style.left = Math.random() * 100 + '%'
-        flower.style.top = '-50px'
-        flower.style.pointerEvents = 'none'
-        flower.style.zIndex = '1000'
-        flower.style.animation = `fall ${3 + Math.random() * 2}s linear forwards`
-        document.body.appendChild(flower)
-
-        setTimeout(() => flower.remove(), 5000)
-      }, i * 50)
-    }
-
-    // Final massive burst
-    setTimeout(() => {
-      for (let i = 0; i < 5; i++) {
-        setTimeout(() => {
-          confetti({
-            particleCount: 100,
-            spread: 120,
-            origin: {
-              x: Math.random() * 0.6 + 0.2,
-              y: Math.random() * 0.4 + 0.3,
-            },
-            colors: ['#f59e0b', '#fbbf24', '#fcd34d', '#d97706', '#dc143c', '#c41e3a'],
-            shapes: ['square'],
-          })
-        }, i * 200)
+      if (Date.now() < end) {
+        requestAnimationFrame(frame)
+      } else {
+        setIsOffering(false)
       }
-    }, 500)
+    })()
   }
 
   return (
-    <div className="min-h-screen overflow-hidden relative">
+    <div className="min-h-screen bg-[#fafafa] relative overflow-hidden">
       <Navigation />
       
-      {/* Animated Background */}
-      <div
-        className="fixed inset-0"
-        style={{
-          background: 'linear-gradient(-45deg, #8b4513, #d97706, #f59e0b, #ffd700, #fbbf24, #f59e0b, #dc2626, #b91c1c)',
-          backgroundSize: '400% 400%',
-          animation: 'gradientShift 20s ease infinite',
-        }}
-      />
-
-      {/* Main Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center p-4 pt-24">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.9 }}
-          transition={{ duration: 1, ease: 'easeOut' }}
-          className="w-full max-w-2xl mx-auto px-4 py-8 text-center"
-        >
-          {/* Title */}
-          <motion.h1
-            initial={{ y: -20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="text-5xl md:text-6xl font-bold text-yellow-300 mb-4 drop-shadow-[0_0_30px_rgba(251,191,36,0.8)]"
-            style={{ fontFamily: 'Playfair Display, serif' }}
-          >
-            The Queen of My Heart
-          </motion.h1>
-
-          <motion.h2
-            initial={{ y: -20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="text-2xl md:text-3xl font-semibold text-white mb-8"
-            style={{ fontFamily: 'Noto Sans Malayalam, sans-serif' }}
-          >
-            എന്റെ ഹൃദയത്തിന്റെ രാജ്ഞി
-          </motion.h2>
-
-          {/* Shrine Frame */}
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.7, type: 'spring', stiffness: 100 }}
-            className="relative inline-block p-8 my-8"
-            style={{
-              background: 'linear-gradient(135deg, #ffd700, #fbbf24, #f59e0b, #d97706, #8b4513)',
-              border: '8px solid #ffd700',
-              borderRadius: '20px',
-              boxShadow: `
-                0 0 0 4px #f59e0b,
-                0 0 0 8px #c41e3a,
-                0 0 40px rgba(255, 215, 0, 0.9),
-                0 0 80px rgba(255, 215, 0, 0.7),
-                0 0 120px rgba(196, 30, 58, 0.6),
-                inset 0 0 30px rgba(255, 255, 255, 0.3)
-              `,
-            }}
-          >
-            {/* Diyas (Oil Lamps) */}
-            <Diya position="left" />
-            <Diya position="right" />
-
-            {/* Decorative Flowers */}
-            <motion.div
-              className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-5xl"
-              animate={{ y: [0, -10, 0], rotate: [0, 5, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              🌺
-            </motion.div>
-            <motion.div
-              className="absolute -bottom-6 right-8 text-5xl"
-              animate={{ y: [0, -10, 0], rotate: [0, -5, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
-            >
-              🌹
-            </motion.div>
-
-            {/* Photo Frame */}
-            <div className="relative">
-              <img
-                src="/DPZY-165.jpg"
-                alt="My Goddess"
-                className="w-64 h-80 md:w-80 md:h-96 object-cover rounded-xl border-4 border-yellow-300 shadow-2xl"
-                style={{
-                  boxShadow: `
-                    0 10px 40px rgba(0, 0, 0, 0.4),
-                    inset 0 0 20px rgba(255, 215, 0, 0.3),
-                    0 0 20px rgba(255, 215, 0, 0.5)
-                  `,
-                }}
-              />
-            </div>
-          </motion.div>
-
-          {/* Offer Flowers Button */}
-          <motion.button
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 1 }}
-            onClick={handleOfferFlowers}
-            disabled={isOffering}
-            className="mt-8 px-12 py-4 rounded-full font-bold text-xl uppercase tracking-wider
-                       bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600
-                       text-yellow-100 border-3 border-yellow-300
-                       shadow-[0_8px_25px_rgba(0,0,0,0.3),0_0_20px_rgba(255,215,0,0.6)]
-                       hover:scale-110 hover:shadow-[0_12px_40px_rgba(0,0,0,0.4),0_0_40px_rgba(255,215,0,1)]
-                       active:scale-105 transition-all duration-300
-                       disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <span className="flex items-center gap-2">
-              <Flower2 className="w-6 h-6" />
-              Offer Flowers 🌺🌹
-            </span>
-          </motion.button>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.2 }}
-            className="mt-4 text-yellow-300 text-lg"
-            style={{ fontFamily: 'Noto Sans Malayalam, sans-serif' }}
-          >
-            പൂക്കൾ അർപ്പിക്കുക 🌺🌹
-          </motion.p>
-
-          {flowerCount > 0 && (
-            <motion.p
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="mt-4 text-yellow-200 text-sm"
-            >
-              Flowers offered: {flowerCount}
-            </motion.p>
-          )}
-        </motion.div>
+      {/* Divine Golden Glow Background */}
+      <div className="fixed inset-0 z-0">
+        <div className="absolute top-[-10%] left-[20%] w-[800px] h-[800px] rounded-full bg-amber-100/40 blur-[100px]" />
+        <div className="absolute bottom-[-10%] right-[10%] w-[600px] h-[600px] rounded-full bg-orange-50/60 blur-[100px]" />
       </div>
 
-      <style jsx global>{`
-        @keyframes gradientShift {
-          0% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-          100% {
-            background-position: 0% 50%;
-          }
-        }
-        @keyframes fall {
-          to {
-            transform: translateY(100vh) rotate(360deg);
-            opacity: 0;
-          }
-        }
-      `}</style>
+      <div className="relative z-10 min-h-screen flex items-center justify-center p-6 pt-24">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="w-full max-w-3xl text-center"
+        >
+          {/* Title */}
+          <div className="mb-12 space-y-3">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex justify-center gap-2 mb-4"
+            >
+              <Sparkles className="text-amber-400 w-6 h-6" />
+            </motion.div>
+            
+            <h1 className="text-5xl md:text-7xl font-bold text-gray-800 tracking-tight" style={{ fontFamily: 'Playfair Display, serif' }}>
+              My Goddess
+            </h1>
+            <h2 className="text-2xl text-amber-600 font-medium" style={{ fontFamily: 'Noto Sans Malayalam, sans-serif' }}>
+              എന്റെ ഹൃദയത്തിന്റെ രാജ്ഞി
+            </h2>
+          </div>
+
+          {/* Elegant Photo Frame */}
+          <div className="relative inline-block group">
+            <div className="absolute -inset-1 bg-gradient-to-tr from-amber-300 to-yellow-200 rounded-[2.5rem] blur opacity-40 group-hover:opacity-60 transition duration-1000"></div>
+            <div className="relative p-2 bg-white rounded-[2.5rem] shadow-xl">
+               <div className="relative rounded-[2rem] overflow-hidden border-4 border-amber-50">
+                 <img
+                   src="/DPZY-165.jpg"
+                   alt="Goddess"
+                   className="w-[300px] h-[400px] md:w-[350px] md:h-[450px] object-cover transition-transform duration-700 group-hover:scale-105"
+                 />
+                 
+                 {/* Shine Effect */}
+                 <div className="absolute inset-0 bg-gradient-to-tr from-amber-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+               </div>
+            </div>
+
+            {/* Subtle Diyas */}
+            <motion.div 
+              animate={{ opacity: [0.6, 1, 0.6], scale: [0.95, 1.05, 0.95] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="absolute -bottom-4 -left-8 text-4xl filter drop-shadow-lg"
+            >
+              🪔
+            </motion.div>
+            <motion.div 
+              animate={{ opacity: [0.6, 1, 0.6], scale: [0.95, 1.05, 0.95] }}
+              transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+              className="absolute -bottom-4 -right-8 text-4xl filter drop-shadow-lg"
+            >
+              🪔
+            </motion.div>
+          </div>
+
+          {/* Action Area */}
+          <div className="mt-16">
+            <motion.button
+              onClick={handleOfferFlowers}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="group relative px-8 py-4 bg-white border border-amber-200 rounded-full shadow-[0_4px_20px_-5px_rgba(251,191,36,0.3)] hover:shadow-[0_8px_30px_-5px_rgba(251,191,36,0.4)] transition-all"
+            >
+              <div className="flex items-center gap-3 text-amber-700 font-semibold text-lg">
+                <Flower2 className="w-5 h-5 group-hover:rotate-45 transition-transform" />
+                <span>Offer Flowers</span>
+              </div>
+            </motion.button>
+            
+            <p className="mt-4 text-amber-800/60 text-sm font-medium">
+              {flowerCount > 0 ? `${flowerCount} flowers offered with love` : 'Click to offer your love'}
+            </p>
+          </div>
+
+        </motion.div>
+      </div>
     </div>
   )
 }
-
-// Diya Component
-function Diya({ position }: { position: 'left' | 'right' }) {
-  return (
-    <motion.div
-      className={`absolute -bottom-8 ${position === 'left' ? 'left-4' : 'right-4'} text-5xl`}
-      animate={{
-        scale: [1, 1.1, 1],
-        filter: [
-          'drop-shadow(0 0 10px rgba(251,191,36,0.8))',
-          'drop-shadow(0 0 15px rgba(251,191,36,1))',
-          'drop-shadow(0 0 10px rgba(251,191,36,0.8))',
-        ],
-      }}
-      transition={{
-        duration: 1.5,
-        repeat: Infinity,
-        ease: 'easeInOut',
-      }}
-    >
-      🪔
-    </motion.div>
-  )
-}
-

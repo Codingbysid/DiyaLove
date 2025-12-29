@@ -15,7 +15,7 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { href: '/', label: 'Home', icon: Home },
-  { href: '/valentine', label: 'Valentine', icon: Heart },
+  { href: '/valentine', label: 'Proposal', icon: Heart },
   { href: '/shrine', label: 'Shrine', icon: Sparkles },
   { href: '/gallery', label: 'Gallery', icon: Image },
   { href: '/poetry', label: 'Poetry', icon: BookOpen },
@@ -23,87 +23,29 @@ const navItems: NavItem[] = [
 
 export default function Navigation() {
   const pathname = usePathname()
+  const [isMobileOpen, setIsMobileOpen] = useState(false)
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-white/10 border-b border-white/20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <motion.div
-              whileHover={{ rotate: 360 }}
-              transition={{ duration: 0.6 }}
-            >
-              <Heart className="w-6 h-6 text-pink-500 fill-pink-500" />
-            </motion.div>
-            <span className="text-xl font-bold bg-gradient-to-r from-pink-500 to-rose-500 bg-clip-text text-transparent">
-              Diya Love
-            </span>
-          </Link>
+    <>
+      <nav className="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        {/* Glassmorphism Bar */}
+        <div className="absolute inset-0 bg-white/70 backdrop-blur-md border-b border-white/50 shadow-sm" />
+        
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-2 group">
+              <div className="p-2 bg-rose-50 rounded-lg group-hover:bg-rose-100 transition-colors">
+                 <Heart className="w-5 h-5 text-rose-500 fill-rose-500" />
+              </div>
+              <span className="text-xl font-bold bg-gradient-to-r from-rose-500 to-purple-600 bg-clip-text text-transparent" style={{ fontFamily: 'Playfair Display, serif' }}>
+                Diya Love
+              </span>
+            </Link>
 
-          {/* Navigation Links */}
-          <div className="hidden md:flex items-center gap-1">
-            {navItems.map((item) => {
-              const Icon = item.icon
-              const isActive = pathname === item.href
-              
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    'relative px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300',
-                    'flex items-center gap-2',
-                    isActive
-                      ? 'text-pink-500'
-                      : 'text-white/80 hover:text-white hover:bg-white/10'
-                  )}
-                >
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeTab"
-                      className="absolute inset-0 bg-white/20 rounded-lg"
-                      transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-                    />
-                  )}
-                  <Icon className={cn('w-4 h-4 relative z-10', isActive && 'text-pink-500')} />
-                  <span className="relative z-10">{item.label}</span>
-                </Link>
-              )
-            })}
-          </div>
-
-          {/* Mobile Menu Button */}
-          <div className="md:hidden">
-            <MobileMenu pathname={pathname} navItems={navItems} />
-          </div>
-        </div>
-      </div>
-    </nav>
-  )
-}
-
-function MobileMenu({ pathname, navItems }: { pathname: string; navItems: NavItem[] }) {
-  const [isOpen, setIsOpen] = useState(false)
-
-  return (
-    <div className="relative">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="p-2 text-white/80 hover:text-white transition-colors"
-      >
-        {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-      </button>
-      
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.95 }}
-            className="absolute top-full right-0 mt-2 bg-white/10 backdrop-blur-md rounded-lg border border-white/20 min-w-[200px] shadow-xl"
-          >
-            <div className="flex flex-col gap-2 p-4">
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-2">
               {navItems.map((item) => {
                 const Icon = item.icon
                 const isActive = pathname === item.href
@@ -112,16 +54,58 @@ function MobileMenu({ pathname, navItems }: { pathname: string; navItems: NavIte
                   <Link
                     key={item.href}
                     href={item.href}
-                    onClick={() => setIsOpen(false)}
                     className={cn(
-                      'flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-medium transition-all',
+                      'relative px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 flex items-center gap-2',
                       isActive
-                        ? 'text-pink-500 bg-white/20'
-                        : 'text-white/80 hover:text-white hover:bg-white/10'
+                        ? 'text-rose-600 bg-rose-50'
+                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                    )}
+                  >
+                    <Icon className={cn('w-4 h-4', isActive && 'fill-rose-200')} />
+                    <span>{item.label}</span>
+                  </Link>
+                )
+              })}
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="md:hidden">
+              <button
+                onClick={() => setIsMobileOpen(!isMobileOpen)}
+                className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                {isMobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {isMobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed inset-x-0 top-16 z-40 bg-white/90 backdrop-blur-xl border-b border-gray-100 shadow-xl md:hidden"
+          >
+            <div className="p-4 space-y-2">
+              {navItems.map((item) => {
+                const Icon = item.icon
+                const isActive = pathname === item.href
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setIsMobileOpen(false)}
+                    className={cn(
+                      'flex items-center gap-3 px-4 py-3 rounded-xl transition-all',
+                      isActive ? 'bg-rose-50 text-rose-600' : 'text-gray-600 hover:bg-gray-50'
                     )}
                   >
                     <Icon className="w-5 h-5" />
-                    <span>{item.label}</span>
+                    <span className="font-medium">{item.label}</span>
                   </Link>
                 )
               })}
@@ -129,7 +113,6 @@ function MobileMenu({ pathname, navItems }: { pathname: string; navItems: NavIte
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </>
   )
 }
-
